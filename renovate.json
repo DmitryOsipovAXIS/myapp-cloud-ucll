@@ -1,0 +1,10 @@
+{
+  "extends": ["config:recommended"],
+  "semanticCommits": "enabled",
+  "semanticCommitType": "chore",
+  "semanticCommitScope": "deps",
+  "schedule": ["before 6am on monday"],
+  "packageRules": [
+    { "matchUpdateTypes": ["patch", "minor"], "automerge": true }
+  ]
+}

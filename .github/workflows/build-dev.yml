@@ -1,0 +1,24 @@
+name: Build Dev Image
+on:
+  push:
+    branches: ["dev"]
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build & push
+        run: |
+          SHA7=$(echo "${GITHUB_SHA}" | cut -c1-7)
+          IMAGE=ghcr.io/${{ github.repository_owner }}/myapp:dev-$SHA7
+          docker build -t $IMAGE .
+          docker push $IMAGE

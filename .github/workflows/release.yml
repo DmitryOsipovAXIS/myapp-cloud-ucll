@@ -1,0 +1,39 @@
+name: Release (SemVer) & Build Prod Image
+on:
+  push:
+    branches: ["main"]
+
+permissions:
+  contents: write
+  packages: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: npm i -D semantic-release @semantic-release/changelog @semantic-release/git @semantic-release/github
+
+      - name: semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
+
+      - name: Login GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build & push prod image from tag
+        run: |
+          VERSION=$(git describe --tags --abbrev=0)
+          IMAGE=ghcr.io/${{ github.repository_owner }}/myapp:$VERSION
+          docker build -t $IMAGE .
+          docker push $IMAGE
