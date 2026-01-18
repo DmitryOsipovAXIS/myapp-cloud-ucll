@@ -19,6 +19,7 @@ jobs:
       - name: Build & push
         run: |
           SHA7=$(echo "${GITHUB_SHA}" | cut -c1-7)
-          IMAGE=ghcr.io/${{ github.repository_owner }}/myapp:dev-$SHA7
+          OWNER_LC=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          IMAGE=ghcr.io/${OWNER_LC}/myapp:dev-$SHA7
           docker build -t $IMAGE .
           docker push $IMAGE
