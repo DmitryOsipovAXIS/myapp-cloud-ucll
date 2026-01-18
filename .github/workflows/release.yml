@@ -36,7 +36,7 @@ jobs:
           OWNER_LC=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
           SHA7=$(echo "${GITHUB_SHA}" | cut -c1-7)
 
-          IMAGE_VER=ghcr.io/${OWNER_LC}/myapp:main-$SHA7
+          IMAGE_VER=ghcr.io/${OWNER_LC}/myapp:latest-$SHA7
           IMAGE_LATEST=ghcr.io/${OWNER_LC}/myapp:latest
 
           docker build -t "$IMAGE_VER" -t "$IMAGE_LATEST" .
