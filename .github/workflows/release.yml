@@ -33,8 +33,12 @@ jobs:
 
       - name: Build & push prod image from tag
         run: |
-          VERSION=$(git describe --tags --abbrev=0)
           OWNER_LC=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
-          IMAGE=ghcr.io/${OWNER_LC}/myapp:dev-$SHA7
-          docker build -t $IMAGE .
-          docker push $IMAGE
+          SHA7=$(echo "${GITHUB_SHA}" | cut -c1-7)
+
+          IMAGE_VER=ghcr.io/${OWNER_LC}/myapp:main-$SHA7
+          IMAGE_LATEST=ghcr.io/${OWNER_LC}/myapp:latest
+
+          docker build -t "$IMAGE_VER" -t "$IMAGE_LATEST" .
+          docker push "$IMAGE_VER"
+          docker push "$IMAGE_LATEST"
